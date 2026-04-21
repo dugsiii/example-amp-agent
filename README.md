@@ -1,4 +1,4 @@
-ag# Integrating an Agent with AMP's RLHF Pipeline
+# Integrating an Agent with AMP's RLHF Pipeline
 
 This guide explains how to integrate any agent with AMP's human-in-the-loop (HITL) and RLHF training pipeline. It uses the document triage agent as a concrete example throughout, but the pattern applies to any agent that makes classification or approval decisions.
 
