@@ -14,6 +14,10 @@ yarn-error.log*
 # Data
 data/
 
+# Simulator output (logs, generated CSVs)
+simulator/out/
+simulator/docs.csv
+
 # Logs
 logs/
 *.log

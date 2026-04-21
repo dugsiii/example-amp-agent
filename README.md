@@ -127,7 +127,7 @@ requests.post(f"{AMP_URL}/api/hitl/request", json=hitl_body, headers=headers)
 },
 ```
 
-### 1c. Poll for the human's decision and finish
+### 1c. Poll for the human's decision, confirm the outcome, and finish
 
 ```python
 # Set state to waiting
@@ -140,12 +140,36 @@ for _ in range(36):      # poll up to 3 minutes
                             params={"caller_id": iid}, headers=headers).json()
     if decision.get("status") == "complete":
         resolution = decision["resolution"]   # "approve" or "reject"
+
+        # Confirm the RLHF outcome immediately so it's eligible for training
+        # without waiting for the default 48-hour settlement window.
+        # Non-fatal: if this fails, the settlement sweep will confirm it eventually.
+        try:
+            requests.post(f"{AMP_URL}/api/rlhf/outcome/feedback",
+                          headers={**headers, "Content-Type": "application/json"},
+                          json={"org_id": org_id,
+                                "instance_id": iid,
+                                "outcome": "succeeded",
+                                "outcome_source": "agent_callback"},
+                          timeout=10)
+        except Exception:
+            pass  # non-fatal
+
         final_state = "abort" if resolution == "reject" else "finished"
         requests.post(f"{AMP_URL}/api/agent/setState",
                       json={"agent_name": AGENT, "instance_id": iid,
                             "state": final_state})
         break
 ```
+
+**Why the agent owns this confirmation, not the simulator:**
+
+RLHF outcomes start as `pending` and only become visible to the EXTRACT training job once they are `confirmed`. Confirmation can happen two ways:
+
+1. **Automatically** — after `outcome_window_hours` expires (default 48h). Designed for production agents that submit real downstream feedback (e.g., "the payment succeeded/failed").
+2. **Explicitly** — by calling `POST /api/rlhf/outcome/feedback` with `outcome=succeeded`. This is what the agent does here.
+
+Putting the confirmation call in the agent means it works correctly in both production use (real human reviewer) and simulator use, without the simulator needing to know about it.
 
 ### 1d. Force all decisions through HITL during data collection
 
@@ -391,7 +415,6 @@ Almost all of `run_e2e.py` is reusable without changes:
 - `_poll_for_workitem` — polls `GET /api/workitems` until the workitem appears
 - `_complete_workitem` — `PUT /api/workitems/{id}/status` with the resolution
 - `_submit_rlhf_outcome` — posts to `/api/rlhf/outcome`
-- `_submit_outcome_feedback` — posts to `/api/rlhf/outcome/feedback` to immediately confirm
 - `_bootstrap_rlhf` — calls `/api/rlhf/bootstrap` before the sim loop
 - `_process_hitl_row` — orchestrates the above steps for one row
 - `run` and `main` — the main loop and CLI
@@ -413,25 +436,11 @@ payload = {
 
 That's typically it. The HITL workitem polling, RLHF outcome submission, and outcome feedback confirmation are all AMP API calls that don't change between domains.
 
-### The critical outcome confirmation step
+### Outcome confirmation: agent's responsibility, not the simulator's
 
-This is worth calling out explicitly because skipping it causes silent TRAIN failures:
+The simulator only needs to submit the outcome record. Confirmation is handled by the agent itself (see Step 1c). This keeps the simulator thin and means confirmation works correctly in production too, without the simulator needing to know about it.
 
-```python
-# After submitting the RLHF outcome...
-_submit_rlhf_outcome(...)
-
-# Immediately confirm so EXTRACT can find it.
-# Without this, outcomes stay 'pending' for 48 hours.
-_submit_outcome_feedback(
-    amp_url=amp_url,
-    api_key=api_key,
-    org_id=org_id,
-    instance_id=instance_id,
-)
-```
-
-The EXTRACT job only pulls rows with `outcome_status = 'confirmed'`. Without calling `/api/rlhf/outcome/feedback`, every outcome stays `pending` indefinitely, EXTRACT writes an empty dataset, and TRAIN fails. The simulator does this automatically — just make sure you keep this step if you write your own simulator from scratch.
+If you write your own agent and do not add the confirmation call to it, outcomes will stay `pending` for 48 hours (the default settlement window) before the EXTRACT job can see them. Set `outcome_window_hours: 0` in your policy as a fallback if you want the settlement sweep to handle it immediately instead.
 
 ---
 
@@ -520,8 +529,8 @@ All simulator scripts load this file automatically using the same manual parser 
 | `GET /api/workitems` | List pending workitems (simulator) |
 | `PUT /api/workitems/{id}/status` | Resolve a workitem (simulator) |
 | `POST /api/rlhf/bootstrap` | Initialize RLHF runtime state (simulator) |
-| `POST /api/rlhf/outcome` | Submit the labeled outcome |
-| `POST /api/rlhf/outcome/feedback` | Immediately confirm the outcome |
+| `POST /api/rlhf/outcome` | Submit the labeled outcome (simulator) |
+| `POST /api/rlhf/outcome/feedback` | Confirm the outcome immediately — called by the agent after HITL resolves |
 | `GET /api/rlhf/policy` | Fetch the active policy (generator, policy mode) |
 | `POST /api/rlhf/policy/evaluate` | Evaluate criteria against action params (generator) |
 | `POST /api/alp/agents/.../progress` | Write progress messages to the instance log |
@@ -535,7 +544,7 @@ All simulator scripts load this file automatically using the same manual parser 
 
 **Root cause:** RLHF outcomes are stuck as `pending`. The EXTRACT job only returns `confirmed` rows, so it writes an empty dataset.
 
-**Fix:** Make sure `_submit_outcome_feedback` is called after every `_submit_rlhf_outcome` in your simulator. Also set `outcome_window_hours: 0` in your policy's `params.outcome_feedback`.
+**Fix:** Make sure your agent calls `POST /api/rlhf/outcome/feedback` after receiving the HITL decision (see Step 1c). If you cannot change the agent, set `outcome_window_hours: 0` in your policy's `params.outcome_feedback` — the settlement sweep will then confirm outcomes immediately on the next STAGE_TICK.
 
 ### `rlhf_bootstrap_failed_404: policy_not_found`
 
@@ -557,7 +566,7 @@ The most common root cause is TRAIN failing because of empty datasets (see above
 ### Outcomes showing as `pending` in the database
 
 This is normal until either:
-- `/api/rlhf/outcome/feedback` is called (immediate) — the simulator does this
+- `/api/rlhf/outcome/feedback` is called (immediate) — the agent does this after each HITL resolution
 - The `outcome_window_expires_at` timestamp passes (delayed by `outcome_window_hours`)
 
 If you're checking the database directly, query `rlhf_approval_outcome` and look for `outcome_status = 'confirmed'`. If all rows are `pending`, the feedback step is missing or the policy has a non-zero `outcome_window_hours`.

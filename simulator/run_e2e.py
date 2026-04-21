@@ -363,16 +363,6 @@ def _process_hitl_row(
             sim_run_id=sim_run_id,
             sequence_no=seq,
         )
-        # Immediately confirm the outcome so it's eligible for training.
-        # Without this, outcomes stay 'pending' for 48h (default settlement
-        # window) and fetchDatasetWindow skips them — TRAIN fails on empty JSONL.
-        if instance_id:
-            _submit_outcome_feedback(
-                amp_url=amp_url,
-                api_key=api_key,
-                org_id=org_id,
-                instance_id=instance_id,
-            )
         rlhf_submitted = True
 
     # Wait for the submit thread to finish (agent gets the decision and returns).

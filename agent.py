@@ -210,6 +210,20 @@ if __name__ == "__main__":
                     if decision.get("status") == "complete":
                         resolution = decision.get("resolution", "unknown")
 
+                        # Confirm the RLHF outcome immediately so it's eligible for
+                        # training without waiting for the 48h settlement window.
+                        # Non-fatal: settlement sweep will catch it eventually if this fails.
+                        try:
+                            requests.post(f"{URL}/api/rlhf/outcome/feedback", headers=HJ,
+                                          json={"org_id": str(org) if org else None,
+                                                "instance_id": iid,
+                                                "outcome": "succeeded",
+                                                "outcome_source": "agent_callback"},
+                                          timeout=10)
+                            log(iid, "  RLHF outcome confirmed")
+                        except Exception as e:
+                            log(iid, f"  RLHF outcome feedback failed (non-fatal): {e}", level="WARN")
+
                         if resolution == "modify":
                             # Extract modification instructions from information field
                             information = decision.get("information", "")
