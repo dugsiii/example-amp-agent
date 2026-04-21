@@ -86,13 +86,43 @@ if __name__ == "__main__":
     HJ     = {**H, "Content-Type": "application/json"}
     BASE   = lambda iid: f"{URL}/api/alp/agents/{requests.utils.quote(AGENT, safe='')}/instances/{requests.utils.quote(iid, safe='')}"
 
+    def amp_post(url, **kwargs):
+        """POST to AMP, raising on connection errors or non-2xx responses."""
+        try:
+            r = requests.post(url, **kwargs)
+            r.raise_for_status()
+            return r
+        except requests.exceptions.RequestException as e:
+            raise RuntimeError(f"AMP POST {url} failed: {e}") from e
+
+    def amp_get(url, **kwargs):
+        """GET from AMP, raising on connection errors or non-2xx responses."""
+        try:
+            r = requests.get(url, **kwargs)
+            r.raise_for_status()
+            return r
+        except requests.exceptions.RequestException as e:
+            raise RuntimeError(f"AMP GET {url} failed: {e}") from e
+
+    def amp_json(response):
+        """Parse JSON from an AMP response, raising on invalid JSON."""
+        try:
+            return response.json()
+        except requests.exceptions.JSONDecodeError as e:
+            raise RuntimeError(f"AMP returned non-JSON response: {response.text[:200]}") from e
+
     def log(iid, message, level="INFO"):
-        """Write to MySQL audit log AND meta.json progress (UI display)."""
+        """Write to MySQL audit log AND meta.json progress (UI display). Fire-and-forget."""
         ts = datetime.now(timezone.utc).isoformat()
-        requests.post(f"{URL}/api/log", headers=HJ, json={
-            "instance_id": iid, "service": AGENT, "level": level,
-            "username": OWNER, "message": message, "timestamp": ts})
-        requests.post(f"{BASE(iid)}/progress", headers=HJ, json={"message": message})
+        try:
+            requests.post(f"{URL}/api/log", headers=HJ, json={
+                "instance_id": iid, "service": AGENT, "level": level,
+                "username": OWNER, "message": message, "timestamp": ts},
+                timeout=5)
+            requests.post(f"{BASE(iid)}/progress", headers=HJ,
+                          json={"message": message}, timeout=5)
+        except requests.exceptions.RequestException as e:
+            print(f"[WARN] log delivery failed: {e}")
 
     app = Flask(__name__)
 
@@ -105,8 +135,11 @@ if __name__ == "__main__":
 
         print(f"[DEBUG] OWNER={repr(OWNER)} URL={repr(URL)}")
         # 1. Create AMP instance
-        init = requests.post(f"{URL}/api/agent/init", headers=HJ,
-                             json={"agent_name": AGENT, "prompt": doc, "auto_start": True}).json()
+        try:
+            init = amp_json(amp_post(f"{URL}/api/agent/init", headers=HJ,
+                                     json={"agent_name": AGENT, "prompt": doc, "auto_start": True}))
+        except RuntimeError as e:
+            return jsonify({"error": "failed to create instance", "detail": str(e)}), 500
         iid = init.get("instance_id")
         if not iid:
             return jsonify({"error": "failed to create instance", "detail": init}), 500
@@ -115,97 +148,126 @@ if __name__ == "__main__":
         try:
             # 2. Mark active + triage
             
-            requests.post(f"{URL}/api/log", headers=HJ, json={
-                "instance_id": iid, "service": AGENT, "level": "INFO", "username": OWNER,
-                "message": "[PROGRESS] instance created, starting triage",
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "event_type": "record"})
+            log(iid, "instance created, starting triage")
 
             result  = triage_document(doc)
             missing = result.get("missing_fields") or []
             print(f"[TRIAGE] {result}")
 
-            requests.post(f"{URL}/api/log", headers=HJ, json={
-                "instance_id": iid, "service": AGENT, "level": "INFO", "username": OWNER,
-                "message": f"[PROGRESS] triage complete: decision={result['decision']} type={result['doc_type']} missing={missing or 'none'}",
-                "timestamp": datetime.now(timezone.utc).isoformat()})
+            log(iid, f"  triage complete: decision={result['decision']} type={result['doc_type']} missing={missing or 'none'}")
+
+            # Force all decisions through HITL for simulator training data collection.
+            result["decision"] = "HUMAN_REVIEW"
 
             report = f"# Triage Report\n\n**Decision:** {result['decision']}\n**Type:** {result['doc_type']}\n**Reason:** {result['reason']}\n**Missing:** {', '.join(missing) or 'None'}"
 
             # 3. Upload artifact
-            requests.post(f"{BASE(iid)}/artifacts/triage-result.md", headers=H, data=report.encode())
-            requests.post(f"{URL}/api/log", headers=HJ, json={
-                "instance_id": iid, "service": AGENT, "level": "INFO", "username": OWNER,
-                "message": "[PROGRESS] artifact uploaded: triage-result.md",
-                "timestamp": datetime.now(timezone.utc).isoformat()})
+            amp_post(f"{BASE(iid)}/artifacts/triage-result.md", headers=H, data=report.encode())
+            log(iid, "  artifact uploaded: triage-result.md")
 
             # 4. Route
             if result["decision"] == "HUMAN_REVIEW":
                 # 4a. Request HITL
-                org = requests.post(f"{URL}/api/internal/users/resolve", headers=HJ,
-                                    json={"username": OWNER}).json().get("org_id")
+                org = amp_json(amp_post(f"{URL}/api/internal/users/resolve", headers=HJ,
+                                       json={"username": OWNER})).get("org_id")
                 hitl_cfg = {"enable": True, "when": "always", "who": "initiator", "what": "approval", "where": "amp"}
-                requests.post(f"{URL}/api/hitl/request", headers=HJ,
-                              json={"caller_id": iid, "instance_id": iid,
-                                    "org_id": str(org) if org else None,
-                                    "agent_name": AGENT, "hitl": hitl_cfg})
-                requests.post(f"{URL}/api/log", headers=HJ, json={
-                    "instance_id": iid, "service": AGENT, "level": "INFO", "username": OWNER,
-                    "message": "HITL request sent, awaiting human review",
-                    "timestamp": datetime.now(timezone.utc).isoformat()})
+                rlhf_payload = {
+                    "policy_values_source": "external",
+                    "action_fields": {
+                        "doc_type":            result["doc_type"],
+                        "missing_fields_count": len(missing),
+                        "missing_fields":      ", ".join(missing) if missing else "",
+                        "submitted_by":        OWNER,
+                    },
+                    "signal_fields": {
+                        "doc_type_unrecognized":  result["doc_type"] == "other",
+                        "has_missing_fields":     len(missing) > 0,
+                        "agent_flagged_ambiguous": True,  # always true on HUMAN_REVIEW path
+                    },
+                    "criteria": [
+                        {"criterion_id": "c_doc_type_recognized", "result": result["doc_type"] != "other"},
+                        {"criterion_id": "c_no_missing_fields",   "result": len(missing) == 0},
+                        {"criterion_id": "c_not_ambiguous",       "result": False},  # always false on HUMAN_REVIEW path
+                    ],
+                }
+                hitl_body = {"caller_id": iid, "instance_id": iid,
+                             "org_id": str(org) if org else None,
+                             "agent_name": AGENT, "hitl": hitl_cfg, "rlhf": rlhf_payload}
+                print(f"[HITL REQUEST BODY]\n{json.dumps(hitl_body, indent=2)}")
+                amp_post(f"{URL}/api/hitl/request", headers=HJ, json=hitl_body)
+                log(iid, "HITL request sent, awaiting human review")
 
                 # 4b. setState → wait, then poll for decision
-                requests.post(f"{URL}/api/agent/setState", headers=HJ,
-                              json={"agent_name": AGENT, "instance_id": iid, "state": "wait"})
-                requests.post(f"{URL}/api/log", headers=HJ, json={
-                    "instance_id": iid, "service": AGENT, "level": "INFO", "username": OWNER,
-                    "message": "state → wait",
-                    "timestamp": datetime.now(timezone.utc).isoformat()})
+                amp_post(f"{URL}/api/agent/setState", headers=HJ,
+                         json={"agent_name": AGENT, "instance_id": iid, "state": "wait"})
+                log(iid, "state → wait")
 
                 for i in range(36):  # poll up to 3 min
                     time.sleep(5)
-                    requests.post(f"{URL}/api/log", headers=HJ, json={
-                        "instance_id": iid, "service": AGENT, "level": "INFO", "username": OWNER,
-                        "message": f"[PROGRESS] polling HITL decision: attempt {i+1}/36",
-                        "timestamp": datetime.now(timezone.utc).isoformat()})
-                    decision = requests.get(f"{URL}/api/hitl/get-decision",
-                                            params={"caller_id": iid}, headers=H).json()
+                    log(iid, f"  polling HITL decision: attempt {i+1}/36")
+                    decision = amp_json(amp_get(f"{URL}/api/hitl/get-decision",
+                                               params={"caller_id": iid}, headers=H))
                     if decision.get("status") == "complete":
                         resolution = decision.get("resolution", "unknown")
+
+                        if resolution == "modify":
+                            # Extract modification instructions from information field
+                            information = decision.get("information", "")
+                            modify_instructions = ""
+                            if "\n" in information:
+                                modify_instructions = information.split("\n", 1)[1].strip()
+                            log(iid, f"HITL modify requested: instructions={modify_instructions or '(none)'}")
+
+                            # Re-triage with modification instructions as context
+                            modified_prompt = doc
+                            if modify_instructions:
+                                modified_prompt = f"{doc}\n\nReviewer instructions: {modify_instructions}"
+                            result = triage_document(modified_prompt)
+                            missing = result.get("missing_fields") or []
+                            log(iid, f"  re-triage complete: decision={result['decision']} type={result['doc_type']}")
+
+                            report = (
+                                f"# Triage Report (Modified)\n\n"
+                                f"**Reviewer Instructions:** {modify_instructions or 'N/A'}\n\n"
+                                f"**Decision:** {result['decision']}\n"
+                                f"**Type:** {result['doc_type']}\n"
+                                f"**Reason:** {result['reason']}\n"
+                                f"**Missing:** {', '.join(missing) or 'None'}"
+                            )
+                            amp_post(f"{BASE(iid)}/artifacts/triage-result.md", headers=H, data=report.encode())
+                            log(iid, "  updated artifact: triage-result.md")
+
+                            amp_post(f"{URL}/api/agent/setState", headers=HJ,
+                                     json={"agent_name": AGENT, "instance_id": iid, "state": "finished"})
+                            log(iid, "state → finished (after modify)")
+                            return jsonify({"instance_id": iid, "decision": result["decision"], "resolution": "modify",
+                                            "modify_instructions": modify_instructions})
+
                         final_state = "abort" if resolution == "reject" else "finished"
-                        requests.post(f"{URL}/api/agent/setState", headers=HJ,
-                                      json={"agent_name": AGENT, "instance_id": iid, "state": final_state})
-                        requests.post(f"{URL}/api/log", headers=HJ, json={
-                            "instance_id": iid, "service": AGENT, "level": "INFO", "username": OWNER,
-                            "message": f"HITL resolved: resolution={resolution} → state={final_state}",
-                            "timestamp": datetime.now(timezone.utc).isoformat()})
+                        amp_post(f"{URL}/api/agent/setState", headers=HJ,
+                                 json={"agent_name": AGENT, "instance_id": iid, "state": final_state})
+                        log(iid, f"HITL resolved: resolution={resolution} → state={final_state}")
                         return jsonify({"instance_id": iid, "decision": result["decision"], "resolution": resolution})
 
-                requests.post(f"{URL}/api/log", headers=HJ, json={
-                    "instance_id": iid, "service": AGENT, "level": "WARN", "username": OWNER,
-                    "message": "[PROGRESS] HITL poll timed out after 3 minutes",
-                    "timestamp": datetime.now(timezone.utc).isoformat()})
+                log(iid, "  HITL poll timed out after 3 minutes", level="WARN")
                 return jsonify({"instance_id": iid, "decision": result["decision"], "status": "waiting_for_human"})
 
             else:
                 # 5. Auto-finish
-                requests.post(f"{URL}/api/agent/setState", headers=HJ,
-                              json={"agent_name": AGENT, "instance_id": iid, "state": "finished"})
-                requests.post(f"{URL}/api/log", headers=HJ, json={
-                    "instance_id": iid, "service": AGENT, "level": "INFO", "username": OWNER,
-                    "message": f"[PROGRESS] auto-finished: decision={result['decision']} reason={result['reason']}",
-                    "timestamp": datetime.now(timezone.utc).isoformat()})
+                amp_post(f"{URL}/api/agent/setState", headers=HJ,
+                         json={"agent_name": AGENT, "instance_id": iid, "state": "finished"})
+                log(iid, f"  auto-finished: decision={result['decision']} reason={result['reason']}")
                 return jsonify({"instance_id": iid, "decision": result["decision"], "reason": result["reason"],
                                 "missing_fields": missing})
 
         except Exception as e:
             print(f"[ERROR] {e}")
-            requests.post(f"{URL}/api/log", headers=HJ, json={
-                "instance_id": iid, "service": AGENT, "level": "ERROR", "username": OWNER,
-                "message": f"[PROGRESS] exception: {e}",
-                "timestamp": datetime.now(timezone.utc).isoformat()})
-            requests.post(f"{URL}/api/agent/setState", headers=HJ,
-                          json={"agent_name": AGENT, "instance_id": iid, "state": "abort"})
+            log(iid, f"  exception: {e}", level="ERROR")
+            try:
+                amp_post(f"{URL}/api/agent/setState", headers=HJ,
+                         json={"agent_name": AGENT, "instance_id": iid, "state": "abort"})
+            except RuntimeError as abort_err:
+                print(f"[WARN] failed to set abort state: {abort_err}")
             return jsonify({"error": str(e)}), 500
 
     port = int(os.environ.get("PORT", 6000))

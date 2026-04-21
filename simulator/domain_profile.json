@@ -1,0 +1,70 @@
+{
+  "agent_name": "document-triage",
+  "hitl_resolution_delay_ms": 0,
+  "scenarios": [
+    {
+      "name": "complete_invoice",
+      "weight": 25,
+      "expected_human_resolution": "approve",
+      "template": "invoice_complete"
+    },
+    {
+      "name": "complete_contract",
+      "weight": 15,
+      "expected_human_resolution": "approve",
+      "template": "contract_complete"
+    },
+    {
+      "name": "incomplete_form",
+      "weight": 15,
+      "expected_human_resolution": "reject",
+      "template": "form_incomplete"
+    },
+    {
+      "name": "missing_signature",
+      "weight": 15,
+      "expected_human_resolution": "reject",
+      "template": "contract_unsigned"
+    },
+    {
+      "name": "gibberish",
+      "weight": 10,
+      "expected_human_resolution": "reject",
+      "template": "gibberish"
+    },
+    {
+      "name": "ambiguous_legal",
+      "weight": 8,
+      "expected_human_resolution": "approve",
+      "template": "ambiguous_legal"
+    },
+    {
+      "name": "suspicious_amount",
+      "weight": 7,
+      "expected_human_resolution": "reject",
+      "template": "suspicious_invoice"
+    },
+    {
+      "name": "foreign_language",
+      "weight": 5,
+      "expected_human_resolution": "approve",
+      "template": "foreign_language"
+    }
+  ],
+  "templates": {
+    "invoice_complete": "INVOICE #{invoice_id}\nFrom: {vendor} | To: {client}\nDate: {date} | Due: {due_date}\nItem: {item_desc} - {qty} units @ ${rate} each\nSubtotal: ${subtotal} | Tax (8%): ${tax} | Total: ${total}\nPO Number: {po_number}\nPayment: Bank transfer to {vendor} account #{account_no}",
+    "contract_complete": "SERVICE AGREEMENT\nThis agreement is entered into between {vendor} (\"Provider\") and {client} (\"Client\").\nServices: {service_desc}\nDuration: {duration} months commencing {date}\nMonthly Rate: ${rate}\nTotal Value: ${total}\nPayment Terms: Net {terms} days\nGoverning Law: {state} State Law\nSigned: {sig1} ({vendor})   {sig2} ({client})\nDate: {date}",
+    "form_incomplete": "EXPENSE REIMBURSEMENT FORM\nEmployee: {name}\nDepartment: {dept}\nDate Submitted: {date}\nExpense Date: {expense_date}\nAmount: ${amount}\nCategory: {category}\nBusiness Purpose: {purpose}\nReceipt Attached: Yes\nSupervisor Signature: ________________\nCost Center: ________________\nApproval Code: ________________",
+    "contract_unsigned": "SERVICE AGREEMENT\nThis agreement is between {vendor} and {client}.\nScope of Work: {service_desc}\nProject Value: ${amount}\nStart Date: {date}\nCompletion Date: {due_date}\nPayment Schedule: {payment_schedule}\nProvider Signature: ________________  Date: ________________\nClient Signature: ________________   Date: ________________",
+    "gibberish": "{gibberish_text}",
+    "ambiguous_legal": "NOTICE OF POTENTIAL CLAIM\nRe: Matter No. {matter_id}\nDate: {date}\nTo Whom It May Concern:\nPursuant to applicable statutes and regulations, this document serves as formal notice regarding the above-referenced matter. The undersigned hereby reserves all rights and remedies available under law and equity. This notice is issued without prejudice to any and all claims, defenses, or counterclaims.\nThe parties are advised to preserve all relevant documentation.\n{legal_boilerplate}\nThis document does not constitute an admission of liability.",
+    "suspicious_invoice": "INVOICE #{invoice_id}\nFrom: {vendor} | To: {client}\nDate: {date}\nServices: {item_desc}\nAmount Due: ${suspicious_amount}\nPayment Required Within: 24 hours\nWire Transfer Only: Account #{account_no}, Routing #{routing_no}\nNO RECEIPT AVAILABLE",
+    "foreign_language": "{foreign_text}\n\n[Translation: {translation_note}]"
+  },
+  "vendors": ["Acme Corp", "Global Solutions LLC", "TechBridge Inc", "Nexus Partners", "Summit Consulting Group", "Apex Services Ltd", "Pinnacle Works", "Vertex Analytics"],
+  "clients": ["Wayne Industries", "Stark Enterprises", "Oscorp Ltd", "Umbrella Corp", "Initech LLC", "Globex Corporation", "Initrode Inc", "Massive Dynamic"],
+  "items": ["Software Development", "Consulting Services", "System Integration", "Data Analysis", "Project Management", "Technical Support", "Training Services", "IT Infrastructure"],
+  "departments": ["Engineering", "Finance", "Operations", "Marketing", "Legal", "HR", "Product", "Sales"],
+  "states": ["California", "New York", "Texas", "Delaware", "Washington", "Illinois"],
+  "gibberish_words": ["asdf", "qwer", "zxcv", "hjkl", "bnm", "poiu", "lkjh", "mnbv", "xcvb", "wert", "sdfg", "dfgh", "fghj", "ghjk"]
+}
