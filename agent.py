@@ -52,6 +52,122 @@ def triage_document(document_text: str) -> dict:
     return json.loads(response.choices[0].message.content)
 
 
+def _normalize_bool(value):
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in ("1", "true", "yes", "y", "met", "pass", "passed")
+    return bool(value)
+
+
+def _criterion_result(criterion):
+    if not isinstance(criterion, dict):
+        return False
+    if "result" in criterion:
+        return _normalize_bool(criterion.get("result"))
+    status = str(criterion.get("status") or "").strip().lower()
+    if status:
+        return status in ("met", "pass", "passed", "true")
+    return False
+
+
+def _criterion_for_hitl(criterion):
+    """Convert simulator/policy criteria into the compact HITL RLHF shape."""
+    if not isinstance(criterion, dict):
+        return None
+    criterion_id = str(criterion.get("criterion_id") or "").strip()
+    if not criterion_id:
+        return None
+    out = {"criterion_id": criterion_id, "result": _criterion_result(criterion)}
+    for key in ("criterion_text", "text", "hardness", "evaluator_type", "signals"):
+        if key in criterion and criterion[key] not in (None, ""):
+            out[key] = criterion[key]
+    return out
+
+
+def _signals_from_criteria(criteria_override):
+    signals = {}
+    if not isinstance(criteria_override, list):
+        return signals
+
+    for criterion in criteria_override:
+        if not isinstance(criterion, dict):
+            continue
+
+        criterion_signals = criterion.get("signals")
+        if isinstance(criterion_signals, dict):
+            for key, value in criterion_signals.items():
+                if key:
+                    signals[key] = value
+
+        criterion_id = str(criterion.get("criterion_id") or "").strip()
+        if not criterion_id:
+            continue
+        passed = _criterion_result(criterion)
+        if criterion_id == "c_doc_type_recognized":
+            signals.setdefault("doc_type_unrecognized", not passed)
+        elif criterion_id == "c_no_missing_fields":
+            signals.setdefault("has_missing_fields", not passed)
+        elif criterion_id == "c_not_ambiguous":
+            signals.setdefault("agent_flagged_ambiguous", not passed)
+
+    return signals
+
+
+def build_rlhf_payload(result, missing, owner, override_context=None):
+    """Build RLHF context without letting the forced-HITL training mode distort features."""
+    override_context = override_context if isinstance(override_context, dict) else {}
+    action_override = override_context.get("action_fields") if isinstance(override_context.get("action_fields"), dict) else {}
+    signal_override = override_context.get("signal_fields") if isinstance(override_context.get("signal_fields"), dict) else {}
+    criteria_override = override_context.get("criteria") if isinstance(override_context.get("criteria"), list) else None
+    signal_defaults = _signals_from_criteria(criteria_override)
+    signal_fields = {**signal_defaults, **signal_override}
+
+    original_decision = str(result.get("decision") or "").strip().upper()
+    doc_type = str(action_override.get("doc_type") or result.get("doc_type") or "other").strip() or "other"
+    missing_text = action_override.get("missing_fields")
+    if missing_text is None:
+        missing_text = ", ".join(missing) if missing else ""
+    missing_count = action_override.get("missing_fields_count")
+    if missing_count is None:
+        missing_count = len(missing)
+
+    agent_flagged_ambiguous = signal_fields.get("agent_flagged_ambiguous")
+    if agent_flagged_ambiguous is None:
+        agent_flagged_ambiguous = original_decision == "HUMAN_REVIEW"
+    else:
+        agent_flagged_ambiguous = _normalize_bool(agent_flagged_ambiguous)
+
+    criteria = []
+    if criteria_override is not None:
+        criteria = [c for c in (_criterion_for_hitl(item) for item in criteria_override) if c]
+    if not criteria:
+        criteria = [
+            {"criterion_id": "c_doc_type_recognized", "result": doc_type != "other"},
+            {"criterion_id": "c_no_missing_fields", "result": len(missing) == 0},
+            {"criterion_id": "c_not_ambiguous", "result": not agent_flagged_ambiguous},
+        ]
+
+    return {
+        "policy_values_source": override_context.get("policy_values_source") or "external",
+        "feature_schema_version": override_context.get("feature_schema_version") or "triage_v1",
+        "action_fields": {
+            **action_override,
+            "doc_type": doc_type,
+            "missing_fields_count": missing_count,
+            "missing_fields": missing_text,
+            "submitted_by": action_override.get("submitted_by") or owner,
+        },
+        "signal_fields": {
+            **signal_fields,
+            "doc_type_unrecognized": _normalize_bool(signal_fields.get("doc_type_unrecognized", doc_type == "other")),
+            "has_missing_fields": _normalize_bool(signal_fields.get("has_missing_fields", len(missing) > 0)),
+            "agent_flagged_ambiguous": agent_flagged_ambiguous,
+        },
+        "criteria": criteria,
+    }
+
+
 # --- Test inputs ---
 TEST_DOCUMENTS = {
     "complete_invoice": """
@@ -145,6 +261,7 @@ if __name__ == "__main__":
         supplied_amount = body.get("invoice_total")
         if not doc:
             return jsonify({"error": "document required"}), 400
+        rlhf_context = body.get("rlhf_context") if isinstance(body.get("rlhf_context"), dict) else {}
 
         print(f"[DEBUG] OWNER={repr(OWNER)} URL={repr(URL)}")
         # 1. Create AMP instance
@@ -165,9 +282,11 @@ if __name__ == "__main__":
 
             result  = triage_document(doc)
             missing = result.get("missing_fields") or []
+            original_decision = result.get("decision")
             print(f"[TRIAGE] {result}")
 
-            log(iid, f"  triage complete: decision={result['decision']} type={result['doc_type']} missing={missing or 'none'}")
+            log(iid, f"  triage complete: decision={original_decision} type={result['doc_type']} missing={missing or 'none'}")
+            rlhf_payload = build_rlhf_payload(result, missing, OWNER, rlhf_context)
 
             # Force all decisions through HITL for simulator training data collection.
             result["decision"] = "HUMAN_REVIEW"

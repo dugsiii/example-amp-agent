@@ -192,6 +192,7 @@ class DocumentRecord:
     scenario: str
     doc_type: str
     expected_human_resolution: str
+    modify_instructions: str
     criteria_json: str
     feature_schema_version: str
     sim_run_id: str
@@ -504,11 +505,17 @@ class DocumentGenerator:
             expected_resolution = policy_resolution or static_resolution
             criteria = policy_criteria or self._build_static_criteria(scenario, doc_type)
 
+            modify_instructions = (
+                scenario.get('modify_instructions', '')
+                if expected_resolution == 'modify'
+                else ''
+            )
             rows.append(DocumentRecord(
                 doc_id=f"doc-{idx:04d}",
                 scenario=scenario['name'],
                 doc_type=doc_type,
                 expected_human_resolution=expected_resolution,
+                modify_instructions=modify_instructions,
                 criteria_json=json.dumps(criteria),
                 feature_schema_version=(
                     self.policy_context.feature_schema_version if self.policy_context else 'triage_v1'

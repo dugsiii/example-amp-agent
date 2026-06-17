@@ -1,379 +1,93 @@
-doc_id,scenario,doc_type,expected_human_resolution,criteria_json,feature_schema_version,sim_run_id,seed,sequence_no,doc_text
-doc-0001,incomplete_form,form,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,1,"EXPENSE REIMBURSEMENT FORM
-Employee: David Park
-Department: Marketing
-Date Submitted: 2025-03-30
-Expense Date: 2025-03-18
-Amount: $25,604
-Category: Travel
-Business Purpose: Annual software license renewal
-Receipt Attached: Yes
-Supervisor Signature: ________________
-Cost Center: ________________
-Approval Code: ________________"
-doc-0002,ambiguous_legal,other,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,2,"NOTICE OF POTENTIAL CLAIM
-Re: Matter No. 2026-86713-FA
-Date: 2025-04-05
-To Whom It May Concern:
-Pursuant to applicable statutes and regulations, this document serves as formal notice regarding the above-referenced matter. The undersigned hereby reserves all rights and remedies available under law and equity. This notice is issued without prejudice to any and all claims, defenses, or counterclaims.
-The parties are advised to preserve all relevant documentation.
-The parties acknowledge that this notice is subject to all applicable statutes of limitations.
-This document does not constitute an admission of liability."
-doc-0003,ambiguous_legal,other,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,3,"NOTICE OF POTENTIAL CLAIM
-Re: Matter No. 2026-06781-CT
-Date: 2025-06-23
-To Whom It May Concern:
-Pursuant to applicable statutes and regulations, this document serves as formal notice regarding the above-referenced matter. The undersigned hereby reserves all rights and remedies available under law and equity. This notice is issued without prejudice to any and all claims, defenses, or counterclaims.
-The parties are advised to preserve all relevant documentation.
-The parties acknowledge that this notice is subject to all applicable statutes of limitations.
-This document does not constitute an admission of liability."
-doc-0004,ambiguous_legal,other,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,4,"NOTICE OF POTENTIAL CLAIM
-Re: Matter No. 2026-03941-GL
-Date: 2025-03-16
-To Whom It May Concern:
-Pursuant to applicable statutes and regulations, this document serves as formal notice regarding the above-referenced matter. The undersigned hereby reserves all rights and remedies available under law and equity. This notice is issued without prejudice to any and all claims, defenses, or counterclaims.
-The parties are advised to preserve all relevant documentation.
-The parties acknowledge that this notice is subject to all applicable statutes of limitations.
-This document does not constitute an admission of liability."
-doc-0005,ambiguous_legal,other,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,5,"NOTICE OF POTENTIAL CLAIM
-Re: Matter No. 2025-03727-XS
-Date: 2025-09-08
-To Whom It May Concern:
-Pursuant to applicable statutes and regulations, this document serves as formal notice regarding the above-referenced matter. The undersigned hereby reserves all rights and remedies available under law and equity. This notice is issued without prejudice to any and all claims, defenses, or counterclaims.
-The parties are advised to preserve all relevant documentation.
-Nothing herein shall be construed as a waiver of any rights or obligations under applicable law.
-This document does not constitute an admission of liability."
-doc-0006,missing_signature,contract,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""contract"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,6,"SERVICE AGREEMENT
-This agreement is between Vertex Analytics and Initech LLC.
-Scope of Work: System Integration services for 24 months
-Project Value: $33,431
-Start Date: 2026-06-07
-Completion Date: 2026-07-07
-Payment Schedule: 50% on start, 50% on completion
-Provider Signature: ________________  Date: ________________
-Client Signature: ________________   Date: ________________"
-doc-0007,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,7,"INVOICE #INV-6919
-From: Acme Corp | To: Globex Corporation
-Date: 2025-08-31 | Due: 2025-09-15
-Item: Training Services - 18 units @ $198 each
-Subtotal: $3,564 | Tax (8%): $285 | Total: $3,849
-PO Number: PO-679551
-Payment: Bank transfer to Acme Corp account #4524383826"
-doc-0008,gibberish,other,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,8,"hjkl ghjk lkjh mnbv ghjk wert ghjk
-xcvb wert bnm sdfg zxcv fghj lkjh
-wert qwer lkjh lkjh zxcv wert
-xcvb bnm lkjh lkjh qwer asdf fghj
-lkjh qwer lkjh poiu fghj bnm asdf zxcv fghj
-ghjk mnbv ghjk ghjk
-1851 2069 9645 3093
-??? !!! @@@ ### $$$"
-doc-0009,foreign_language,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,9,"FACTURA No. INV-4483
-De: Summit Consulting Group | Para: Wayne Industries
-Fecha: 2025-07-25
-Descripción: Technical Support
-Importe: $14899 USD
-Condiciones: Pago en 30 días
-
-[Translation: Invoice from Summit Consulting Group to Wayne Industries, amount $14899, payment in 30 days]"
-doc-0010,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,10,"INVOICE #INV-4398
-From: Nexus Partners | To: Wayne Industries
-Date: 2025-04-26 | Due: 2025-05-11
-Item: Data Analysis - 1 units @ $140 each
-Subtotal: $140 | Tax (8%): $11 | Total: $151
-PO Number: PO-829844
-Payment: Bank transfer to Nexus Partners account #8198202347"
-doc-0011,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,11,"INVOICE #INV-1173
-From: Pinnacle Works | To: Initech LLC
-Date: 2025-07-10 | Due: 2025-08-24
-Item: Software Development - 39 units @ $86 each
-Subtotal: $3,354 | Tax (8%): $268 | Total: $3,622
-PO Number: PO-893622
-Payment: Bank transfer to Pinnacle Works account #2518612298"
-doc-0012,suspicious_amount,invoice,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""suspicious_amount"": true}}]",triage_v1,sim-run-002,99,12,"INVOICE #INV-5867
-From: Apex Services Ltd | To: Massive Dynamic
-Date: 2025-03-21
-Services: System Integration
-Amount Due: $888,888
-Payment Required Within: 24 hours
-Wire Transfer Only: Account #3052554856, Routing #948402261
-NO RECEIPT AVAILABLE"
-doc-0013,missing_signature,contract,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""contract"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,13,"SERVICE AGREEMENT
-This agreement is between Acme Corp and Initech LLC.
-Scope of Work: Project Management services for 21 months
-Project Value: $37,620
-Start Date: 2025-07-23
-Completion Date: 2025-09-21
-Payment Schedule: 50% on start, 50% on completion
-Provider Signature: ________________  Date: ________________
-Client Signature: ________________   Date: ________________"
-doc-0014,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,14,"INVOICE #INV-8190
-From: Acme Corp | To: Globex Corporation
-Date: 2025-09-22 | Due: 2025-11-06
-Item: Software Development - 27 units @ $164 each
-Subtotal: $4,428 | Tax (8%): $354 | Total: $4,782
-PO Number: PO-066961
-Payment: Bank transfer to Acme Corp account #5987245144"
-doc-0015,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,15,"INVOICE #INV-1592
-From: Summit Consulting Group | To: Umbrella Corp
-Date: 2026-02-07 | Due: 2026-02-22
-Item: Project Management - 12 units @ $285 each
-Subtotal: $3,420 | Tax (8%): $274 | Total: $3,694
-PO Number: PO-911793
-Payment: Bank transfer to Summit Consulting Group account #2056488122"
-doc-0016,incomplete_form,form,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,16,"EXPENSE REIMBURSEMENT FORM
-Employee: Bob Kumar
-Department: Operations
-Date Submitted: 2026-10-14
-Expense Date: 2026-10-06
-Amount: $31,612
-Category: Supplies
-Business Purpose: Annual software license renewal
-Receipt Attached: Yes
-Supervisor Signature: ________________
-Cost Center: ________________
-Approval Code: ________________"
-doc-0017,incomplete_form,form,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,17,"EXPENSE REIMBURSEMENT FORM
+doc_id,scenario,doc_type,expected_human_resolution,modify_instructions,criteria_json,feature_schema_version,sim_run_id,seed,sequence_no,doc_text
+doc-0001,complete_invoice,invoice,approve,,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-001,1,1,"INVOICE #INV-6762
+From: Global Solutions LLC | To: Initech LLC
+Date: 2026-04-29 | Due: 2026-06-28
+Item: Consulting Services - 32 units @ $98 each
+Subtotal: $3,136 | Tax (8%): $251 | Total: $3,387
+PO Number: PO-851306
+Payment: Bank transfer to Global Solutions LLC account #0869757953"
+doc-0002,missing_approvals,other,modify,Please request missing signature and cost center before acceptance.,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-001,1,2,"EXPENSE REIMBURSEMENT FORM
 Employee: Alice Chen
 Department: Engineering
-Date Submitted: 2025-10-19
-Expense Date: 2025-10-08
-Amount: $48,490
-Category: Equipment
-Business Purpose: Client meeting travel expenses
-Receipt Attached: Yes
-Supervisor Signature: ________________
-Cost Center: ________________
-Approval Code: ________________"
-doc-0018,complete_contract,contract,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""contract"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,18,"SERVICE AGREEMENT
-This agreement is entered into between Apex Services Ltd (""Provider"") and Wayne Industries (""Client"").
-Services: System Integration services for 3 months
-Duration: 18 months commencing 2026-09-27
-Monthly Rate: $486
-Total Value: $6,823
-Payment Terms: Net 15 days
-Governing Law: Texas State Law
-Signed: /s/ K. Davis (Apex Services Ltd)   /s/ L. Taylor (Wayne Industries)
-Date: 2026-09-27"
-doc-0019,incomplete_form,form,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,19,"EXPENSE REIMBURSEMENT FORM
-Employee: Emma Torres
-Department: Sales
-Date Submitted: 2026-05-13
-Expense Date: 2026-04-29
-Amount: $44,781
+Date Submitted: 2026-06-09
+Expense Date: 2026-05-31
+Amount: $37,289
 Category: Travel
-Business Purpose: Annual software license renewal
+Business Purpose: Office equipment for remote work
 Receipt Attached: Yes
 Supervisor Signature: ________________
 Cost Center: ________________
 Approval Code: ________________"
-doc-0020,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,20,"INVOICE #INV-9929
-From: Acme Corp | To: Initrode Inc
-Date: 2026-08-11 | Due: 2026-10-10
-Item: Training Services - 18 units @ $139 each
-Subtotal: $2,502 | Tax (8%): $200 | Total: $2,702
-PO Number: PO-974989
-Payment: Bank transfer to Acme Corp account #8945560783"
-doc-0021,incomplete_form,form,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,21,"EXPENSE REIMBURSEMENT FORM
-Employee: Emma Torres
-Department: Operations
-Date Submitted: 2026-05-19
-Expense Date: 2026-05-07
-Amount: $34,837
-Category: Supplies
-Business Purpose: Client meeting travel expenses
-Receipt Attached: Yes
-Supervisor Signature: ________________
-Cost Center: ________________
-Approval Code: ________________"
-doc-0022,missing_signature,contract,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""contract"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,22,"SERVICE AGREEMENT
-This agreement is between Global Solutions LLC and Initech LLC.
-Scope of Work: Training Services services for 22 months
-Project Value: $47,948
-Start Date: 2025-04-16
-Completion Date: 2025-05-16
-Payment Schedule: 50% on start, 50% on completion
-Provider Signature: ________________  Date: ________________
-Client Signature: ________________   Date: ________________"
-doc-0023,ambiguous_legal,other,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,23,"NOTICE OF POTENTIAL CLAIM
-Re: Matter No. 2026-13015-CI
-Date: 2025-02-20
-To Whom It May Concern:
-Pursuant to applicable statutes and regulations, this document serves as formal notice regarding the above-referenced matter. The undersigned hereby reserves all rights and remedies available under law and equity. This notice is issued without prejudice to any and all claims, defenses, or counterclaims.
-The parties are advised to preserve all relevant documentation.
-The parties acknowledge that this notice is subject to all applicable statutes of limitations.
-This document does not constitute an admission of liability."
-doc-0024,suspicious_amount,invoice,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""suspicious_amount"": true}}]",triage_v1,sim-run-002,99,24,"INVOICE #INV-6396
-From: Apex Services Ltd | To: Stark Enterprises
-Date: 2026-01-31
-Services: Software Development
-Amount Due: $999,999
-Payment Required Within: 24 hours
-Wire Transfer Only: Account #2099108578, Routing #829851879
-NO RECEIPT AVAILABLE"
-doc-0025,foreign_language,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,25,"请款单 #INV-7534
-供应商: Vertex Analytics | 客户: Massive Dynamic
-日期: 2025-12-08
-服务项目: Training Services
-金额: $4812 USD
+doc-0003,complete_contract,contract,approve,,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""contract"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-001,1,3,"SERVICE AGREEMENT
+This agreement is entered into between Summit Consulting Group (""Provider"") and Oscorp Ltd (""Client"").
+Services: Training Services services for 16 months
+Duration: 4 months commencing 2025-01-09
+Monthly Rate: $341
+Total Value: $11,048
+Payment Terms: Net 60 days
+Governing Law: New York State Law
+Signed: /s/ M. Brown (Summit Consulting Group)   /s/ T. Martinez (Oscorp Ltd)
+Date: 2025-01-09"
+doc-0004,complete_invoice,invoice,approve,,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-001,1,4,"INVOICE #INV-3230
+From: Vertex Analytics | To: Oscorp Ltd
+Date: 2025-04-16 | Due: 2025-06-15
+Item: Data Analysis - 19 units @ $468 each
+Subtotal: $8,892 | Tax (8%): $711 | Total: $9,603
+PO Number: PO-797333
+Payment: Bank transfer to Vertex Analytics account #0364277884"
+doc-0005,foreign_language,invoice,modify,Please translate/extract the invoice fields before routing.,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-001,1,5,"请款单 #INV-8558
+供应商: Nexus Partners | 客户: Oscorp Ltd
+日期: 2025-06-11
+服务项目: Project Management
+金额: $44263 USD
 付款条件: 30天
 
-[Translation: Invoice from Vertex Analytics to Massive Dynamic, amount $4812, 30-day payment terms]"
-doc-0026,foreign_language,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,26,"FACTURA No. INV-6129
-De: Apex Services Ltd | Para: Initrode Inc
-Fecha: 2025-05-05
-Descripción: System Integration
-Importe: $34052 USD
-Condiciones: Pago en 30 días
-
-[Translation: Invoice from Apex Services Ltd to Initrode Inc, amount $34052, payment in 30 days]"
-doc-0027,missing_signature,contract,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""contract"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,27,"SERVICE AGREEMENT
-This agreement is between Acme Corp and Massive Dynamic.
-Scope of Work: IT Infrastructure services for 21 months
-Project Value: $3,676
-Start Date: 2026-12-29
-Completion Date: 2027-02-12
-Payment Schedule: 50% on start, 50% on completion
-Provider Signature: ________________  Date: ________________
-Client Signature: ________________   Date: ________________"
-doc-0028,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,28,"INVOICE #INV-1655
-From: Acme Corp | To: Globex Corporation
-Date: 2026-01-07 | Due: 2026-01-22
-Item: Technical Support - 26 units @ $290 each
-Subtotal: $7,540 | Tax (8%): $603 | Total: $8,143
-PO Number: PO-240461
-Payment: Bank transfer to Acme Corp account #1665351214"
-doc-0029,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,29,"INVOICE #INV-5376
-From: TechBridge Inc | To: Initech LLC
-Date: 2026-04-28 | Due: 2026-05-28
-Item: Project Management - 20 units @ $445 each
-Subtotal: $8,900 | Tax (8%): $712 | Total: $9,612
-PO Number: PO-528222
-Payment: Bank transfer to TechBridge Inc account #0852210189"
-doc-0030,incomplete_form,form,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,30,"EXPENSE REIMBURSEMENT FORM
-Employee: Bob Kumar
-Department: Finance
-Date Submitted: 2025-06-09
-Expense Date: 2025-06-02
-Amount: $35,205
-Category: Training
+[Translation: Invoice from Nexus Partners to Oscorp Ltd, amount $44263, 30-day payment terms]"
+doc-0006,missing_approvals,other,modify,Please request missing signature and cost center before acceptance.,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-001,1,6,"EXPENSE REIMBURSEMENT FORM
+Employee: Emma Torres
+Department: Product
+Date Submitted: 2026-02-11
+Expense Date: 2026-02-05
+Amount: $29,213
+Category: Equipment
 Business Purpose: Project-related supplies
 Receipt Attached: Yes
 Supervisor Signature: ________________
 Cost Center: ________________
 Approval Code: ________________"
-doc-0031,missing_signature,contract,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""contract"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,31,"SERVICE AGREEMENT
-This agreement is between Vertex Analytics and Oscorp Ltd.
-Scope of Work: IT Infrastructure services for 6 months
-Project Value: $26,135
-Start Date: 2026-02-21
-Completion Date: 2026-04-07
-Payment Schedule: 50% on start, 50% on completion
-Provider Signature: ________________  Date: ________________
-Client Signature: ________________   Date: ________________"
-doc-0032,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,32,"INVOICE #INV-1593
-From: TechBridge Inc | To: Initech LLC
-Date: 2026-08-17 | Due: 2026-10-01
-Item: Training Services - 32 units @ $323 each
-Subtotal: $10,336 | Tax (8%): $827 | Total: $11,163
-PO Number: PO-939832
-Payment: Bank transfer to TechBridge Inc account #1014723180"
-doc-0033,incomplete_form,form,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,33,"EXPENSE REIMBURSEMENT FORM
-Employee: David Park
-Department: Finance
-Date Submitted: 2025-10-27
-Expense Date: 2025-10-19
-Amount: $31,090
-Category: Equipment
-Business Purpose: Professional development conference
-Receipt Attached: Yes
-Supervisor Signature: ________________
-Cost Center: ________________
-Approval Code: ________________"
-doc-0034,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,34,"INVOICE #INV-2879
-From: Pinnacle Works | To: Initrode Inc
-Date: 2026-08-28 | Due: 2026-09-12
-Item: System Integration - 23 units @ $162 each
-Subtotal: $3,726 | Tax (8%): $298 | Total: $4,024
-PO Number: PO-098521
-Payment: Bank transfer to Pinnacle Works account #2668311562"
-doc-0035,complete_contract,contract,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""contract"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,35,"SERVICE AGREEMENT
-This agreement is entered into between Apex Services Ltd (""Provider"") and Globex Corporation (""Client"").
-Services: Data Analysis services for 20 months
-Duration: 11 months commencing 2025-11-07
-Monthly Rate: $114
-Total Value: $3,447
-Payment Terms: Net 15 days
-Governing Law: Texas State Law
-Signed: /s/ M. Brown (Apex Services Ltd)   /s/ P. Harris (Globex Corporation)
-Date: 2025-11-07"
-doc-0036,suspicious_amount,invoice,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""suspicious_amount"": true}}]",triage_v1,sim-run-002,99,36,"INVOICE #INV-0341
-From: Apex Services Ltd | To: Initrode Inc
-Date: 2025-03-18
-Services: Training Services
-Amount Due: $888,888
-Payment Required Within: 24 hours
-Wire Transfer Only: Account #6368957538, Routing #592028532
-NO RECEIPT AVAILABLE"
-doc-0037,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,37,"INVOICE #INV-0863
-From: Summit Consulting Group | To: Umbrella Corp
-Date: 2026-07-17 | Due: 2026-09-15
-Item: Project Management - 31 units @ $77 each
-Subtotal: $2,387 | Tax (8%): $191 | Total: $2,578
-PO Number: PO-101797
-Payment: Bank transfer to Summit Consulting Group account #9792879748"
-doc-0038,incomplete_form,form,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,38,"EXPENSE REIMBURSEMENT FORM
-Employee: Emma Torres
-Department: Legal
-Date Submitted: 2026-09-23
-Expense Date: 2026-09-17
-Amount: $21,925
-Category: Supplies
-Business Purpose: Client meeting travel expenses
-Receipt Attached: Yes
-Supervisor Signature: ________________
-Cost Center: ________________
-Approval Code: ________________"
-doc-0039,missing_signature,contract,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""contract"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,39,"SERVICE AGREEMENT
-This agreement is between Acme Corp and Massive Dynamic.
-Scope of Work: Consulting Services services for 17 months
-Project Value: $16,302
-Start Date: 2025-07-27
-Completion Date: 2025-09-25
-Payment Schedule: 50% on start, 50% on completion
-Provider Signature: ________________  Date: ________________
-Client Signature: ________________   Date: ________________"
-doc-0040,complete_invoice,invoice,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,40,"INVOICE #INV-5914
-From: Apex Services Ltd | To: Wayne Industries
-Date: 2025-11-24 | Due: 2026-01-08
-Item: Consulting Services - 37 units @ $366 each
-Subtotal: $13,542 | Tax (8%): $1,083 | Total: $14,625
-PO Number: PO-769759
-Payment: Bank transfer to Apex Services Ltd account #2409331493"
-doc-0041,gibberish,other,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,41,"hjkl zxcv bnm dfgh bnm dfgh qwer
-bnm bnm mnbv sdfg asdf lkjh fghj dfgh wert dfgh
-poiu zxcv poiu xcvb sdfg asdf fghj wert lkjh xcvb
-asdf wert wert bnm lkjh ghjk poiu mnbv
-asdf fghj sdfg mnbv asdf wert fghj
-hjkl dfgh poiu wert xcvb sdfg wert poiu wert
-2452 6887 6297 2516 3047
-??? !!! @@@ ### $$$"
-doc-0042,ambiguous_legal,other,approve,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""doc_type"": ""other"", ""doc_type_unrecognized"": true}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,42,"NOTICE OF POTENTIAL CLAIM
-Re: Matter No. 2026-52243-HH
-Date: 2026-02-04
-To Whom It May Concern:
-Pursuant to applicable statutes and regulations, this document serves as formal notice regarding the above-referenced matter. The undersigned hereby reserves all rights and remedies available under law and equity. This notice is issued without prejudice to any and all claims, defenses, or counterclaims.
-The parties are advised to preserve all relevant documentation.
-The parties acknowledge that this notice is subject to all applicable statutes of limitations.
-This document does not constitute an admission of liability."
-doc-0043,incomplete_form,form,reject,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-002,99,43,"EXPENSE REIMBURSEMENT FORM
+doc-0007,foreign_language,invoice,modify,Please translate/extract the invoice fields before routing.,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-001,1,7,"FACTURA No. INV-5205
+De: Global Solutions LLC | Para: Wayne Industries
+Fecha: 2026-02-26
+Descripción: Technical Support
+Importe: $30782 USD
+Condiciones: Pago en 30 días
+
+[Translation: Invoice from Global Solutions LLC to Wayne Industries, amount $30782, payment in 30 days]"
+doc-0008,incomplete_form,form,reject,,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""form"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""has_missing_fields"": true}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""met"", ""signals"": {""agent_flagged_ambiguous"": false}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-001,1,8,"EXPENSE REIMBURSEMENT FORM
 Employee: Carol White
 Department: Legal
-Date Submitted: 2026-12-18
-Expense Date: 2026-12-12
-Amount: $12,920
-Category: Training
+Date Submitted: 2026-07-15
+Expense Date: 2026-07-11
+Amount: $30,102
+Category: Software
 Business Purpose: Annual software license renewal
 Receipt Attached: Yes
 Supervisor Signature: ________________
 Cost Center: ________________
 Approval Code: ________________"
+doc-0009,suspicious_amount,invoice,reject,,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""not_met"", ""signals"": {""suspicious_amount"": true}}]",triage_v1,sim-run-001,1,9,"INVOICE #INV-5035
+From: Vertex Analytics | To: Stark Enterprises
+Date: 2026-07-27
+Services: System Integration
+Amount Due: $750,000
+Payment Required Within: 24 hours
+Wire Transfer Only: Account #3755193309, Routing #499989981
+NO RECEIPT AVAILABLE"
+doc-0010,foreign_language,invoice,modify,Please translate/extract the invoice fields before routing.,"[{""criterion_id"": ""c_doc_type_recognized"", ""criterion_text"": ""Document type is recognized"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""doc_type"": ""invoice"", ""doc_type_unrecognized"": false}}, {""criterion_id"": ""c_no_missing_fields"", ""criterion_text"": ""Document has no missing required fields"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""has_missing_fields"": false}}, {""criterion_id"": ""c_not_ambiguous"", ""criterion_text"": ""Document content is not ambiguous or unclassifiable"", ""evaluator_type"": ""llm"", ""hardness"": ""soft"", ""status"": ""not_met"", ""signals"": {""agent_flagged_ambiguous"": true}}, {""criterion_id"": ""c_amount_not_suspicious"", ""criterion_text"": ""Document amount is not anomalously large or suspicious"", ""evaluator_type"": ""compute"", ""hardness"": ""hard"", ""status"": ""met"", ""signals"": {""suspicious_amount"": false}}]",triage_v1,sim-run-001,1,10,"RECHNUNG Nr. INV-3909
+Von: Summit Consulting Group | An: Initrode Inc
+Datum: 2026-06-29
+Leistung: Data Analysis
+Betrag: $32421 USD
+Zahlungsziel: 30 Tage
+
+[Translation: Invoice from Summit Consulting Group to Initrode Inc, amount $32421, payment within 30 days]"

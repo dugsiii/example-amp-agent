@@ -10,7 +10,7 @@
     },
     {
       "name": "complete_contract",
-      "weight": 15,
+      "weight": 22,
       "expected_human_resolution": "approve",
       "template": "contract_complete"
     },
@@ -34,8 +34,9 @@
     },
     {
       "name": "ambiguous_legal",
-      "weight": 8,
-      "expected_human_resolution": "approve",
+      "weight": 17,
+      "expected_human_resolution": "modify",
+      "modify_instructions": "Please classify this as legal review required and attach a summary.",
       "template": "ambiguous_legal"
     },
     {
@@ -46,9 +47,17 @@
     },
     {
       "name": "foreign_language",
-      "weight": 5,
-      "expected_human_resolution": "approve",
+      "weight": 16,
+      "expected_human_resolution": "modify",
+      "modify_instructions": "Please translate/extract the invoice fields before routing.",
       "template": "foreign_language"
+    },
+    {
+      "name": "missing_approvals",
+      "weight": 14,
+      "expected_human_resolution": "modify",
+      "modify_instructions": "Please request missing signature and cost center before acceptance.",
+      "template": "form_incomplete"
     }
   ],
   "templates": {

@@ -79,10 +79,27 @@ def _submit_document(
     """
     url = f"{agent_url.rstrip('/')}/submit"
     headers = {'X-API-Key': api_key}
+    rlhf_context: Dict[str, Any] = {}
+    try:
+        criteria = json.loads(row.get('criteria_json') or '[]')
+        if isinstance(criteria, list):
+            rlhf_context['criteria'] = criteria
+    except Exception:
+        pass
+
+    doc_type = str(row.get('doc_type') or '').strip()
+    if doc_type:
+        rlhf_context.setdefault('action_fields', {})['doc_type'] = doc_type
+    feature_schema_version = str(row.get('feature_schema_version') or '').strip()
+    if feature_schema_version:
+        rlhf_context['feature_schema_version'] = feature_schema_version
+
     payload = {
         'doc_id': row['doc_id'],
         'document': row['doc_text'],
     }
+    if rlhf_context:
+        payload['rlhf_context'] = rlhf_context
     try:
         resp = requests.post(url, json=payload, headers=headers, timeout=timeout_sec)
     except requests.exceptions.RequestException as exc:
@@ -139,11 +156,16 @@ def _complete_workitem(
     api_key: str,
     workitem_id: str,
     resolution: str,
+    information: str = "",
 ) -> None:
     """PUT /api/workitems/{id}/status with the ground-truth resolution."""
     headers = {'X-API-Key': api_key}
     url = f"{amp_url.rstrip('/')}/api/workitems/{workitem_id}/status"
-    payload = {'status': 'Complete', 'resolution': resolution}
+    payload: Dict[str, Any] = {'status': 'Complete', 'resolution': resolution}
+    if information:
+        # Prefix with a header line so agent.py's split("\n", 1)[1] extracts the
+        # instruction text cleanly from decision.get("information").
+        payload['information'] = f"Reviewer instructions:\n{information}"
     try:
         resp = requests.put(url, json=payload, headers=headers, timeout=60.0)
     except requests.exceptions.RequestException as exc:
@@ -164,21 +186,29 @@ def _submit_rlhf_outcome(
     reviewer_id: str,
     sim_run_id: str,
     sequence_no: int,
+    modify_instructions: str = "",
 ) -> None:
     """POST /api/rlhf/outcome to feed the human label back to AMP."""
     headers = {'X-API-Key': api_key}
     url = f"{amp_url.rstrip('/')}/api/rlhf/outcome"
     now_iso = _iso_now()
+    human: Dict[str, Any] = {
+        'decision': decision,
+        'user_id': reviewer_id,
+        'role': 'sim_human',
+        'comment': f'simulated_outcome seq={sequence_no}',
+    }
+    if decision == 'modify':
+        human['modify_payload'] = {
+            'type': 'action_patch',
+            'patch': [{'op': 'replace', 'path': '/doc_type', 'value': 'other'}],
+            'comment': modify_instructions or f'simulated_modify seq={sequence_no}',
+        }
     payload = {
         'org_id': org_id,
         'agent_name': agent_name,
         'decision_point_id': decision_point_id,
-        'human': {
-            'decision': decision,
-            'user_id': reviewer_id,
-            'role': 'sim_human',
-            'comment': f'simulated_outcome seq={sequence_no}',
-        },
+        'human': human,
         'run_mode': 'sim',
         'sim_run_id': sim_run_id,
         'sim_time': now_iso,
@@ -253,7 +283,8 @@ def _process_hitl_row(
     """
     doc_id = row['doc_id']
     scenario = row['scenario']
-    expected_resolution = row['expected_human_resolution']  # 'approve' or 'reject'
+    expected_resolution = row['expected_human_resolution']  # 'approve', 'reject', or 'modify'
+    modify_instructions = row.get('modify_instructions', '')
 
     # Launch blocking /submit in background so we can concurrently resolve WI.
     holder: Dict[str, Any] = {}
@@ -346,6 +377,7 @@ def _process_hitl_row(
         api_key=api_key,
         workitem_id=workitem_id,
         resolution=expected_resolution,
+        information=modify_instructions,
     )
 
     # Submit RLHF outcome if a decision point is attached.
@@ -362,6 +394,7 @@ def _process_hitl_row(
             reviewer_id=reviewer_id,
             sim_run_id=sim_run_id,
             sequence_no=seq,
+            modify_instructions=modify_instructions,
         )
         rlhf_submitted = True
 
@@ -383,6 +416,7 @@ def _process_hitl_row(
         'agent_decision': agent_decision,
         'hitl_resolved': True,
         'resolution': expected_resolution,
+        'modify_instructions': modify_instructions or None,
         'workitem_id': workitem_id,
         'rlhf_submitted': rlhf_submitted,
     }
