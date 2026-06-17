@@ -6,7 +6,7 @@ Outputs: ACCEPT | REQUEST_MORE_INFO | HUMAN_REVIEW
 
 import os
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 from openai import OpenAI
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -16,15 +16,27 @@ SYSTEM_PROMPT = """You are a document triage agent. Analyze the submitted docume
 Classify the document and return:
 {
   "doc_type": "invoice|contract|form|other",
-  "missing_fields": ["list of missing required fields, empty if none"],
+  "missing_fields": ["list of missing required fields for the doc_type, empty if none"],
+  "vendor_name": "string or null",
+  "invoice_number": "string or null",
+  "invoice_date": "YYYY-MM-DD or null",
+  "due_date": "YYYY-MM-DD or null",
+  "line_item_count": 0,
+  "total_amount": 1234.56,
+  "currency": "USD",
+  "payment_method": "bank_transfer|check|ach|wire_transfer|cash|other|null",
   "decision": "ACCEPT | REQUEST_MORE_INFO | HUMAN_REVIEW",
   "reason": "one sentence explanation"
 }
 
 Rules:
-- ACCEPT: document type is clear and all key fields are present
+- ACCEPT: document type is clear and all required fields are present
 - REQUEST_MORE_INFO: document is recognizable but missing critical fields
 - HUMAN_REVIEW: document is ambiguous, unusual, or cannot be classified
+- total_amount: final total as a number, no currency symbol. null if not found.
+- line_item_count: number of distinct line items. 0 if none found.
+- currency: 3-letter ISO code (e.g. USD, EUR). null if not found.
+- payment_method: normalize to one of the enum values. null if not stated.
 """
 
 def triage_document(document_text: str) -> dict:
@@ -130,6 +142,7 @@ if __name__ == "__main__":
     def submit():
         body = freq.get_json(force=True) or {}
         doc  = body.get("document", "")
+        supplied_amount = body.get("invoice_total")
         if not doc:
             return jsonify({"error": "document required"}), 400
 
@@ -170,24 +183,77 @@ if __name__ == "__main__":
                 # 4a. Request HITL
                 org = amp_json(amp_post(f"{URL}/api/internal/users/resolve", headers=HJ,
                                        json={"username": OWNER})).get("org_id")
-                hitl_cfg = {"enable": True, "when": "always", "who": "initiator", "what": "approval", "where": "amp"}
+                total_amount = supplied_amount if supplied_amount is not None else result.get("total_amount")
+
+                # Compute days until due from extracted due_date
+                days_until_due = None
+                due_date_str = result.get("due_date")
+                if due_date_str:
+                    try:
+                        days_until_due = (date.fromisoformat(due_date_str) - date.today()).days
+                    except ValueError:
+                        pass
+
+                amount_high       = isinstance(total_amount, (int, float)) and total_amount > 10000
+                amount_very_high  = isinstance(total_amount, (int, float)) and total_amount > 50000
+                payment_urgent    = days_until_due is not None and days_until_due < 3
+                payment_overdue   = days_until_due is not None and days_until_due < 0
+                no_line_items     = (result.get("line_item_count") or 0) == 0
+                non_usd           = bool(result.get("currency")) and result.get("currency") != "USD"
+                unusual_payment   = result.get("payment_method") in ("wire_transfer", "cash", "other")
+
+                log(iid, (
+                    f"  data fields extracted from invoice: "
+                    f"type={result['doc_type']} vendor={result.get('vendor_name')} "
+                    f"total={total_amount} {result.get('currency')} "
+                    f"due={due_date_str} (days={days_until_due}) "
+                    f"payment={result.get('payment_method')} "
+                    f"line_items={result.get('line_item_count')} "
+                    f"missing={missing or 'none'} — awaiting human approval"
+                ))
+                hitl_cfg = {"enable": True, "when": "data fields extracted from invoice", "who": "initiator", "what": "approval", "where": "amp"}
                 rlhf_payload = {
                     "policy_values_source": "external",
                     "action_fields": {
-                        "doc_type":            result["doc_type"],
+                        "doc_type":             result["doc_type"],
+                        "vendor_name":          result.get("vendor_name"),
+                        "invoice_number":       result.get("invoice_number"),
+                        "invoice_date":         result.get("invoice_date"),
+                        "due_date":             due_date_str,
+                        "days_until_due":       days_until_due,
+                        "line_item_count":      result.get("line_item_count"),
+                        "invoice_total":        total_amount,
+                        "currency":             result.get("currency"),
+                        "payment_method":       result.get("payment_method"),
                         "missing_fields_count": len(missing),
-                        "missing_fields":      ", ".join(missing) if missing else "",
-                        "submitted_by":        OWNER,
+                        "missing_fields":       ", ".join(missing) if missing else "",
+                        "submitted_by":         OWNER,
                     },
                     "signal_fields": {
-                        "doc_type_unrecognized":  result["doc_type"] == "other",
-                        "has_missing_fields":     len(missing) > 0,
-                        "agent_flagged_ambiguous": True,  # always true on HUMAN_REVIEW path
+                        "doc_type_unrecognized":   result["doc_type"] == "other",
+                        "has_missing_fields":      len(missing) > 0,
+                        "agent_flagged_ambiguous": True,
+                        "amount_high":             amount_high,
+                        "amount_very_high":        amount_very_high,
+                        "payment_urgent":          payment_urgent,
+                        "payment_overdue":         payment_overdue,
+                        "no_line_items":           no_line_items,
+                        "non_usd_currency":        non_usd,
+                        "unusual_payment_method":  unusual_payment,
                     },
                     "criteria": [
-                        {"criterion_id": "c_doc_type_recognized", "result": result["doc_type"] != "other"},
-                        {"criterion_id": "c_no_missing_fields",   "result": len(missing) == 0},
-                        {"criterion_id": "c_not_ambiguous",       "result": False},  # always false on HUMAN_REVIEW path
+                        # Hard — must pass to approve
+                        {"criterion_id": "c_doc_type_recognized",  "result": result["doc_type"] != "other"},
+                        {"criterion_id": "c_no_missing_fields",    "result": len(missing) == 0},
+                        {"criterion_id": "c_not_ambiguous",        "result": True},
+                        {"criterion_id": "c_has_line_items",       "result": not no_line_items},
+                        {"criterion_id": "c_not_overdue",          "result": not payment_overdue},
+                        {"criterion_id": "c_amount_reasonable",    "result": not amount_high},
+                        # Soft — informative signalsh
+                        {"criterion_id": "c_amount_not_very_high", "result": not amount_very_high},
+                        {"criterion_id": "c_payment_not_urgent",   "result": not payment_urgent},
+                        {"criterion_id": "c_standard_payment",     "result": not unusual_payment},
+                        {"criterion_id": "c_usd_currency",         "result": not non_usd},
                     ],
                 }
                 hitl_body = {"caller_id": iid, "instance_id": iid,
