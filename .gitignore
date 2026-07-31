@@ -102,3 +102,11 @@ data/emails/subscribers.json
 data/newsletters/archive.json
 temp/
 dist/
+
+# Database backups and exports
+**/backups/
+**/db-backups/
+*backup*.sql*
+*dump*.sql*
+*.mysqldump
+*.dump
